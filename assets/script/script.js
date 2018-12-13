@@ -48,7 +48,7 @@ var config = {
         console.log(firsttime);
         var currentTime = moment();
         var currentTimeCalc = moment().subtract(1, "years");
-        var difftime = moment().diff(moment(firsttime), "minutes");
+        var difftime = moment().diff(moment(firsttrain), "minutes");
         var tremainder = difftime%tfrequency;
         var minutesremaining = tfrequency - tremainder;
         var nexttrain = moment().add(minutesremaining, "minutes").format ("hh:mm A");
