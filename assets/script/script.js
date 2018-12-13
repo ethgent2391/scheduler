@@ -17,6 +17,17 @@ var config = {
     var firsttime = "";
     var frequency = "";
 
+    database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
+        var newtrain = snapshot.val()
+        $("tbody").append(`<tr>
+                      <td>${newtrain.name}</td>
+                      <td>${newtrain.destination}</td>
+                      <td>${newtrain.firsttime}</td>
+                      <td>${newtrain.frequency}</td>
+                      </tr>`)
+    })
+
+
   $("button").on("click", function(){
       event.preventDefault();
       name = $("#input_name").val().trim();
@@ -35,14 +46,5 @@ var config = {
           firsttime: firsttime,
           frequency: frequency
       });
-      database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
-          var newtrain = snapshot.val()
-          $("tbody").append(`<tr>
-                        <td>${newtrain.name}</td>
-                        <td>${newtrain.destination}</td>
-                        <td>${newtrain.firsttime}</td>
-                        <td>${newtrain.frequency}</td>
-                        </tr>`)
-      })
   })
 }
