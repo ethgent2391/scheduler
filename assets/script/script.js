@@ -12,23 +12,9 @@ var config = {
   firebase.initializeApp(config);
   
   var database = firebase.database();
-    var name = "";
-    var destination = "";
-    var firsttime = "";
-    var frequency = "";
+  var index = 0;
 
-    database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
-        var newtrain = snapshot.val()
-        $("tbody").append(`<tr>
-                      <td>${newtrain.name}</td>
-                      <td>${newtrain.destination}</td>
-                      <td>${newtrain.firsttime}</td>
-                      <td>${newtrain.frequency}</td>
-                      </tr>`)
-    })
-
-
-  $("button").on("click", function(){
+  $("#submitbutton").on("click", function(){
       event.preventDefault();
       name = $("#input_name").val().trim();
       destination = $("#input_destination").val().trim();
@@ -45,6 +31,86 @@ var config = {
           destination: destination,
           firsttime: firsttime,
           frequency: frequency
-      });
+
+        });
+        $("#input_name").val("");
+        $("#input_destination").val("");
+        $("#input_firsttime").val("");
+        $("#input_frequency").val("");
+
+        return false;
   })
+
+  database.ref().orderByChild("dateAdded").on("child_added", function (childSnapshot) {
+        var removeButton = $("<button>").html("<span class='glyphicon glyphicon-remove'></span>").addClass("removeButton").attr("data-index", index).attr("data-key", childSnapshot.key);
+  
+        var firsttime = childSnapshot.val().firsttime;
+        var tfrequency = parseInt(childSnapshot.val().frequency);
+        var firsttrain = moment(firsttime, "HH:mm").subtract(1, "years");
+        console.log(firsttrain);
+        console.log(firsttime);
+        var currentTime = moment();
+        var currentTimeCalc = moment().subtract(1, "years");
+        var difftime = moment().diff(moment(firsttime), "minutes");
+        var tremainder = difftime%tfrequency;
+        var minutesremaining = tfrequency - tremainder;
+        var nexttrain = moment().add(minutesremaining, "minutes").format ("hh:mm A");
+        var beforeCalc = moment(firsttrain).diff(currentTimeCalc, "minutes");
+        var beforeminutes = Math.ceil(moment.duration(beforeCalc).asMinutes());
+
+        if ((currentTimeCalc - firsttrain) < 0) {
+            nexttrain = childSnapshot.val().firsttime;;
+            minutesremaining = beforeminutes;
+          }
+          else {
+            nexttrain = moment().add(minutesremaining, "minutes").format("hh:mm A");
+            minutesremaining = tfrequency - tremainder;
+          }
+
+
+          var newRow = $("<tr>");
+          newRow.addClass("row-" + index);
+            var cell1 = $("<td>").text(childSnapshot.val().name);
+            var cell2 = $("<td>").text(childSnapshot.val().destination);
+            var cell3 = $("<td>").text(firsttrain)
+            var cell4 = $("<td>").text(childSnapshot.val().frequency);
+            var cell5 = $("<td>").text(nexttrain);
+            var cell6 = $("<td>").text(minutesremaining);
+            var cell7 = $("<td>").append(removeButton);
+      
+            newRow
+                .append(cell1)
+                .append(cell2)
+                .append(cell3)
+                .append(cell4)
+                .append(cell5)
+                .append(cell6)
+                .append(cell7);
+      
+           $("tbody").append(newRow);
+           index++;
+        })
+
+        function removeRow () {
+            $(".row-" + $(this).attr("data-index")).remove();
+            database.ref().child($(this).attr("data-key")).remove();
+          };
+        
+          function submitRow () {
+            var newname = $(".newName").val().trim();
+            var newdestination = $(".newDestination").val().trim();
+            var newfrequency = $(".newFrequency").val().trim();
+        
+            database.ref().child($(this).attr("data-key")).child("name").set(newname);
+            database.ref().child($(this).attr("data-key")).child("destination").set(newdestination);
+            database.ref().child($(this).attr("data-key")).child("frequency").set(newfrequency);
+        
+            $(".row-" + $(this).attr("data-index")).children().eq(1).html(newname);
+            $(".row-" + $(this).attr("data-index")).children().eq(2).html(newdestination);
+            $(".row-" + $(this).attr("data-index")).children().eq(3).html(newfrequency);
+            
+          };
+        
+          $(document).on("click", ".removeButton", removeRow);
+          $(document).on("click", ".submitButton", submitRow);
 }

@@ -13,7 +13,7 @@
     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"></script>
     <script src="./assets/script/script.js"></script>
-    <script src="./assets/script/moment.js"></script>
+    
 </head>
 <body>
     <div id="pagetitle" class="col-md-12 bg-dark">
@@ -30,6 +30,7 @@
                             <th scope="col">Frequency</th>
                             <th scope="col">Next Arrival</th>
                             <th scope="col">Minutes Away</th>
+                            <th scope="col">Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,14 +50,15 @@
                     </div>
                     <div class="form-group">
                         <label for="input_firsttime">First time (HH:mm Military time)</label>
-                        <input class="form-control" id="input_firsttime" placeholder="HH:mm (military time">
+                        <input type="time" class="form-control" id="input_firsttime" placeholder="HH:mm (military time">
                         </div>
                     <div class="form-group">
                         <label for="input_frequency">Frequency</label>
                         <input class="form-control" id="input_frequency" placeholder="min(s)">
                         </div>
-                    <button type="button" class="btn btn-primary">Submit</button>
+                    <button id="submitbutton" type="button" class="btn btn-primary">Submit</button>
                   </form>
     </div>
+    <script src="./assets/script/moment.js"></script>
 </body>
 </html>
