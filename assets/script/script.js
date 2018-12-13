@@ -1,5 +1,7 @@
 // Initialize Firebase
 window.onload = function(){
+var index = 0;
+
 var config = {
     apiKey: "AIzaSyCZswvWMe04KYH_XKRA1R2maGG-4B0pC14",
     authDomain: "train-scheduler-21e7b.firebaseapp.com",
@@ -12,7 +14,7 @@ var config = {
   firebase.initializeApp(config);
   
   var database = firebase.database();
-  var index = 0;
+  
 
   $("#submitbutton").on("click", function(){
       event.preventDefault();
@@ -20,11 +22,6 @@ var config = {
       destination = $("#input_destination").val().trim();
       firsttime = $("#input_firsttime").val().trim();
       frequency = $("#input_frequency").val().trim();
-
-      console.log(name);
-      console.log(destination);
-      console.log(firsttime);
-      console.log(frequency);
 
       database.ref().push({
           name: name,
